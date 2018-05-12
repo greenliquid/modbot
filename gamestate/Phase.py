@@ -1,5 +1,5 @@
-from Modifier import Modifiable
-from Temporal import Temporal
+from gamestate.Modifier import Modifiable
+from gamestate.Temporal import Temporal
 
 
 class PhaseType(Modifiable):

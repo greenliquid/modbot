@@ -12,7 +12,12 @@
 		{
 			"name":"Not_Mafia",
 			"aliases":[],
-			"role":"Picnicker Carol, Vanilla Townie",
+			"role":
+			{
+				"flavor_name":"Picnicker Carol",
+				"role_name":"Vanilla Townie",
+				"abilities":[]
+			},
 			"alignment":"Town",
 			"modifiers":[]
 		},

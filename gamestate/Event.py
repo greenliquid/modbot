@@ -141,7 +141,7 @@ class DeadlineEvent(Event):
         deadline: the deadline being set, in ISO 8601 format.
 
     Optional Parameters:
-        election: if supplied, the deadline will apply to this election only.
+        election: if supplied, the deadline will apply to the supplied election only.
         phase: if set True, the deadline will apply to the active phase even if there are active elections.
     """
 

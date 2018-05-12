@@ -1,0 +1,30 @@
+{
+	"alignment_color_condition":"dead",
+	"alignments":
+	[
+		{
+			"name":"Town",
+			"faction":"the Town",
+			"color":"#008000"
+		},
+		{
+			"name":"Mafia",
+			"faction":"the Mafia",
+			"color":"#FF0000"
+		},
+		{
+			"name":"Werewolves",
+			"faction":"the Werewolves",
+			"color":"#8B4513"
+		},
+		{
+			"name":"Serial Killer",
+			"faction":"",
+			"color":"#FF4500"
+		},
+		{
+			"name":"Independent",
+			"color":"#0000FF"
+		}
+	]
+}

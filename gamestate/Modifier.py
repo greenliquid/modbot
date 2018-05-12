@@ -1,4 +1,4 @@
-from Temporal import Temporal
+from gamestate.Temporal import Temporal
 
 
 class Modifier(Temporal):

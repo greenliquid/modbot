@@ -1,5 +1,5 @@
-from GameState import GameState, Game
-from Component import Component
+from gamestate.GameState import GameState, Game
+from gamestate.Component import Component
 
 
 def main():
@@ -31,7 +31,10 @@ def main():
     for election in game.game_state.elections:
         for vc in election.vote_counts:
             print(game.generate_vote_count(vc, style='Micc') + '\n\n')
-    print('breakpoint')
+    my_hacked_in_component = Component.create('players_list', game_state=game.game_state, post=game.game_state.post,
+                                              style='Micc')
+    print(my_hacked_in_component.generate())
+    print('\n\nbreakpoint')
 
 if __name__ == '__main__':
     main()

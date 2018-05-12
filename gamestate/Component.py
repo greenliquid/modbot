@@ -132,7 +132,7 @@ class VoteCountLabelComponent(Component):
         super()._get_parts()
         self.parts['phase_number'] = self.params['election'].phase.number
         self.parts['vote_count_number'] = len([vc for vc in self.params['election'].vote_counts
-                                          if vc < self.params['post']]) + 1
+                                               if vc < self.params['post']]) + 1
 
 
 class VoteCountVotesComponent(Component):
@@ -143,15 +143,18 @@ class VoteCountVotesComponent(Component):
     def _get_parts(self):
         super()._get_parts()
         voters = list()
+
+        # Determine whether we are counting votes for an elector, or counting those who are Not Voting
+        # If the 'elector' parameter is None, count those who are Not Voting
         if self.params['elector']:
-            # Get the votes for the elector
+            # Resolve the player / name of the elector
             votee = self.params['elector'].get_player()
             if not isinstance(votee, str):
                 # It's a player, so create a subcomponent to represent it
                 votee = self._subcomponent('player_label', player=votee).generate()
             num_votes = self.params['election'].num_votes_for_player(self.params['post'],
                                                                      self.params['elector'])
-            # Generate the list of voters
+            # Generate the list of votes
             for vote in sorted(self.params['election'].active_votes_by_votee(self.params['post'],
                                                                              self.params['elector']),
                                key=lambda post: post.start):
@@ -161,8 +164,18 @@ class VoteCountVotesComponent(Component):
             votee = self.params.get('not_voting_label', 'Not Voting')
             not_voting = self.params['election'].not_voting(self.params['post'])
             num_votes = len(not_voting)
+
+            # Each elector could be a player or a non-player elector
             for elector in sorted(not_voting, key=lambda elector: elector.get_name(self.params['post'])):
-                voters.append(elector.get_name(self.params['post']))
+                player = elector.get_player()
+                if not isinstance(player, str):
+                    # It's a player, so create a subcomponent to represent it
+                    voters.append(self._subcomponent('player_label', player=player))
+                else:
+                    # It's a plain name, so append that
+                    voters.append(player)
+
+        # Set the parts
         self.parts['votee'] = votee
         self.parts['num_votes'] = num_votes
         self.parts['votes_list'] = self._subcomponent('list', list=voters, delimiter=', ').generate()
@@ -230,14 +243,43 @@ class PlayerLabelComponent(Component):
 
     def _get_parts(self):
         super()._get_parts()
+        player_name = self.params['player'].get_current_user(self.params['post']).display_name
+
+        # Replacements: logic to include a list of users who formerly occupied the slot
         replacees = list()
         if self.params.get('include_replacements', False):
             for replacee in self.params['player'].users:
                 if replacee.end is not None and replacee.end <= self.params['post']:
                     replacees.append(self._subcomponent('player_replacee', user=replacee))
             replacees.reverse()
+
+        # Alignment: logic to include extra data, like labels and coloring, based on alignment
+        faction = ''
+        color = ''
+        if self.params['player'].alignment and self.params.get('alignments', False):
+            for alignment in self.params['alignments']:
+                if alignment['name'] == self.params['player'].alignment:
+                    faction = alignment['faction']
+                    color = alignment['color']
+            # Wrap the player's name in their alignment's color based on the configured condition
+            #   None: Don't wrap at all
+            #   'dead': Wrap only if the player is dead
+            #   'always': Wrap in all cases
+            if color != '':
+                def _wrap_alignment_color(x):
+                    return '[color=' + color + ']' + x + '[/color]'
+                alignment_color_condition = self.params.get('alignment_color_condition', None)
+                if alignment_color_condition == 'always':
+                    player_name = _wrap_alignment_color(player_name)
+                elif alignment_color_condition == 'dead':
+                    if not self.params['player'].get_modifier(self.params['post'], 'alive'):
+                        player_name = _wrap_alignment_color(player_name)
+
+        # Set the parts
+        self.parts['faction'] = faction
+        self.parts['color'] = color
         self.parts['replacees'] = self._subcomponent('list', list=replacees, delimiter='').generate()
-        self.parts['player_name'] = self.params['player'].get_current_user(self.params['post']).display_name
+        self.parts['player_name'] = player_name
 
 
 class PlayerReplaceeComponent(Component):
@@ -249,6 +291,7 @@ class PlayerReplaceeComponent(Component):
         super()._get_parts()
         self.parts['replacee_name'] = self.params['user'].display_name
         self.parts['replace_post'] = self.params['user'].end
+
 
 class ListComponent(Component):
 
@@ -264,7 +307,6 @@ class ListComponent(Component):
                 item = item.generate()
             self.parts['key' + str(num)] = item
             num += 1
-
 
     def _label_generator(self):
         for x in range(len(self.params['list'])):
