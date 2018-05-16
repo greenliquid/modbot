@@ -1,9 +1,9 @@
 from math import ceil
 
-from gamestate.Modifier import Modifiable
-from gamestate.Temporal import Temporal
-from gamestate.Player import Player
-from gamestate.Elector import Elector
+from Modifier import Modifiable
+from Temporal import Temporal
+from Player import Player
+from Elector import Elector
 
 
 class ElectionType(Modifiable):

@@ -1,6 +1,6 @@
-from gamestate.Modifier import Modifiable
-from gamestate.Temporal import Temporal
-from gamestate.User import User
+from Modifier import Modifiable
+from Temporal import Temporal
+from User import User
 
 
 class Player(Temporal, Modifiable):

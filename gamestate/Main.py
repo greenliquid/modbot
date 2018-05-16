@@ -1,5 +1,5 @@
-from gamestate.GameState import GameState, Game
-from gamestate.Component import Component
+from GameState import GameState, Game
+from Component import Component
 
 
 def main():

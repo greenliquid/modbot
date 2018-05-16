@@ -1,12 +1,12 @@
 import json
 
-from gamestate.Modifier import Modifiable
-from gamestate.Player import Player
-from gamestate.User import User
-from gamestate.Election import Election, ElectionType
-from gamestate.Phase import Phase, PhaseType
-from gamestate.Event import Event
-from gamestate.Component import Component
+from Modifier import Modifiable
+from Player import Player
+from User import User
+from Election import Election, ElectionType
+from Phase import Phase, PhaseType
+from Event import Event
+from Component import Component
 
 
 def load_json_file(filename):
@@ -217,7 +217,7 @@ class Game:
         self.events = list()
         self.log = list()
         self.style = style
-        self.last_parsed
+        self.last_parsed = 0
         self.threads = list()
 
     def __str__(self):
